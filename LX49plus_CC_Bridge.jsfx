@@ -1,0 +1,38 @@
+desc:LX49+ CC Bridge to ReaScript
+// Captures incoming MIDI CC messages and publishes them to a shared gmem ring buffer.
+// Insert this JSFX on a record-armed monitoring track receiving the Nektar Impact LX49+ MIDI input.
+
+options:gmem=LX49_CC_BRIDGE
+options:no_meter
+in_pin:none
+out_pin:none
+
+@init
+SLOTS = 256;
+STRIDE = 4;
+BASE = 16;
+seq = 0;
+gmem[0] = 0;
+gmem[1] = SLOTS;
+gmem[2] = STRIDE;
+gmem[3] = BASE;
+
+@block
+while (midirecv(offset, msg1, msg2, msg3)) (
+  status = msg1 & $xF0;
+
+  // MIDI CC only: 0xB0..0xBF
+  status == $xB0 ? (
+    seq += 1;
+    slot = BASE + ((seq % SLOTS) * STRIDE);
+
+    gmem[slot]     = seq;
+    gmem[slot + 1] = (msg1 & $x0F) + 1; // channel 1..16
+    gmem[slot + 2] = msg2;              // CC number 0..127
+    gmem[slot + 3] = msg3;              // CC value 0..127
+    gmem[0] = seq;
+  );
+
+  // Always pass MIDI through, so the track can still feed instruments if needed.
+  midisend(offset, msg1, msg2, msg3);
+);
