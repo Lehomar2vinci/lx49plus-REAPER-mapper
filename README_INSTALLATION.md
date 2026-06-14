@@ -49,6 +49,13 @@ Actions > Show action list
 ```
 
 Puis :
+Dans l'Action List, utilise :
+
+```text
+New action... > Load ReaScript...
+```
+
+Puis sélectionne :
 
 ```text
 New action... > Load ReaScript...
@@ -138,6 +145,43 @@ Input: MIDI > Impact LX49+ > All channels
 ```
 
 La piste doit rester :
+![Étape 5 — Charger le script Lua](images/etape_5_charger_script_lua.png)
+
+Important : dans REAPER, `Load ReaScript...` sert surtout à **ajouter le script dans l'Action List**. Il ne lance pas toujours l'interface immédiatement.
+
+Après avoir cliqué sur `Ouvrir` :
+
+1. ferme la fenêtre de sélection de fichier si elle est encore ouverte ;
+2. dans l'Action List, clique sur `Clear` pour effacer le filtre actuel ;
+3. cherche `LX49` dans le champ `Filter` ;
+4. sélectionne `Script: LX49plus_GUI_Mapper.lua` ou `LX49plus_GUI_Mapper` ;
+5. clique sur `Run` ou `Run/close`.
+
+Si Windows masque les extensions, le fichier peut apparaître comme `LX49plus_GUI_Mapper` au lieu de `LX49plus_GUI_Mapper.lua`. C'est normal si le type affiché est `Fichier source Lua`.
+
+Tu peux aussi lui assigner un raccourci clavier ou l'ajouter à une toolbar REAPER une fois qu'il apparaît dans l'Action List.
+
+---
+
+### Étape 6 — Apprendre et assigner les contrôles
+
+Dans l'interface `LX49+ GUI Mapper` :
+
+1. sélectionne un contrôle virtuel, par exemple `Fader 1` ou `Encoder 1` ;
+2. clique sur `Apprendre CC` ;
+3. bouge le fader, le potard ou le bouton physique correspondant sur le LX49+ ;
+4. clique sur `Changer cible` pour choisir la destination ;
+5. clique sur `Configurer argument` pour choisir le numéro de piste ou l'ID d'action REAPER.
+
+![Étape 6 — Apprendre et assigner les contrôles](images/etape_6_apprendre_assigner_controles.png)
+
+---
+
+## Piste MIDI bridge
+
+La piste bridge doit rester active pendant l'utilisation du mapper.
+
+Configuration attendue :
 
 ```text
 Record arm        : ON
