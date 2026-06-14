@@ -7,25 +7,6 @@ Le système fonctionne en deux parties :
 - `LX49plus_CC_Bridge.jsfx` : petit JSFX à insérer sur une piste MIDI. Il lit les CC entrants et les publie dans une mémoire partagée `gmem`.
 - `LX49plus_GUI_Mapper.lua` : interface graphique native REAPER, basée sur `gfx`, pour apprendre les CC et les mapper vers des pistes, le master ou des actions REAPER.
 
----
-
-## Contenu du dossier
-
-```text
-lx49plus_reaper_mapper/
-├── LX49plus_CC_Bridge.jsfx
-├── LX49plus_GUI_Mapper.lua
-├── README_INSTALLATION.md
-└── images/
-    ├── etape_1_ouvrir_dossier_reaper.png
-    ├── etape_2_copier_fichiers_reaper.png
-    ├── etape_3_creer_piste_midi.png
-    ├── etape_4_ajouter_jsfx_bridge.png
-    ├── etape_5_charger_script_lua.png
-    └── etape_6_apprendre_assigner_controles.png
-```
-
----
 
 ## Installation rapide
 
@@ -36,8 +17,8 @@ lx49plus_reaper_mapper/
 5. Mets son entrée MIDI sur `Impact LX49+ > All channels`.
 6. Active l'armement d'enregistrement et le monitoring de la piste.
 7. Ajoute le FX `JS: LX49+ CC Bridge to ReaScript` sur cette piste.
-8. Dans REAPER : `Actions > Show action list > ReaScript > Load...`, puis choisis `LX49plus_GUI_Mapper.lua`.
-9. Lance le script Lua depuis l'Action List.
+8. Dans REAPER : `Actions > Show action list`, puis utilise `New action... > Load ReaScript...` et choisis `LX49plus_GUI_Mapper.lua`.
+9. Après le chargement, le script ne se lance pas forcément tout seul : dans l'Action List, efface le filtre, cherche `LX49`, sélectionne `Script: LX49plus_GUI_Mapper.lua`, puis clique sur `Run` ou `Run/close`.
 
 ---
 
@@ -104,7 +85,13 @@ Dans REAPER, ouvre :
 Actions > Show action list
 ```
 
-Dans l'Action List, va dans la section `ReaScript`, clique sur `Load...`, puis sélectionne :
+Dans l'Action List, utilise :
+
+```text
+New action... > Load ReaScript...
+```
+
+Puis sélectionne :
 
 ```text
 LX49plus_GUI_Mapper.lua
@@ -112,7 +99,19 @@ LX49plus_GUI_Mapper.lua
 
 ![Étape 5 — Charger le script Lua](images/etape_5_charger_script_lua.png)
 
-Une fois chargé, le script peut être lancé depuis l'Action List. Tu peux aussi lui assigner un raccourci clavier ou l'ajouter à une toolbar REAPER.
+Important : dans REAPER, `Load ReaScript...` sert surtout à **ajouter le script dans l'Action List**. Il ne lance pas toujours l'interface immédiatement.
+
+Après avoir cliqué sur `Ouvrir` :
+
+1. ferme la fenêtre de sélection de fichier si elle est encore ouverte ;
+2. dans l'Action List, clique sur `Clear` pour effacer le filtre actuel ;
+3. cherche `LX49` dans le champ `Filter` ;
+4. sélectionne `Script: LX49plus_GUI_Mapper.lua` ou `LX49plus_GUI_Mapper` ;
+5. clique sur `Run` ou `Run/close`.
+
+Si Windows masque les extensions, le fichier peut apparaître comme `LX49plus_GUI_Mapper` au lieu de `LX49plus_GUI_Mapper.lua`. C'est normal si le type affiché est `Fichier source Lua`.
+
+Tu peux aussi lui assigner un raccourci clavier ou l'ajouter à une toolbar REAPER une fois qu'il apparaît dans l'Action List.
 
 ---
 
@@ -180,6 +179,25 @@ Types de cibles prévus :
 ---
 
 ## Dépannage rapide
+
+### Rien ne se passe après avoir choisi `LX49plus_GUI_Mapper.lua`
+
+C'est généralement normal : tu viens seulement de charger/importer le script dans l'Action List. Il faut ensuite le lancer.
+
+À faire :
+
+1. dans l'Action List, clique sur `Clear` pour enlever le filtre `reascript load` ou tout autre filtre ;
+2. tape `LX49` dans `Filter` ;
+3. sélectionne `Script: LX49plus_GUI_Mapper.lua` ou `LX49plus_GUI_Mapper` ;
+4. clique sur `Run` ou `Run/close`.
+
+Si le script n'apparaît toujours pas, recharge-le avec `New action... > Load ReaScript...`, puis vérifie que le fichier est bien dans :
+
+```text
+REAPER resource path/Scripts/
+```
+
+---
 
 ### Le script s'ouvre mais ne reçoit aucun CC
 
