@@ -6,23 +6,16 @@ Cette version remplace l’installation longue par un **script unique** :
 LX49plus_Mapper_OneClick.lua
 ```
 
-Tu n’as plus besoin de copier manuellement un JSFX dans `Effects`, de créer la piste MIDI, d’ajouter le FX, puis de charger un deuxième script. Le script OneClick fait tout ça automatiquement.
+Le script OneClick fait tout ça automatiquement.
 
 ---
 
-## Pourquoi je ne pars pas sur un VST/VSTi
 
-Un VST/VSTi serait pratique à installer, mais ce n’est pas le meilleur format pour ce besoin précis.
-
-Un plugin VST contrôle surtout **son propre audio, son propre MIDI et ses propres paramètres**. Pour piloter proprement REAPER lui-même — volume des pistes, pan, mute, solo, arm, actions REAPER — le plus fiable reste l’API native de REAPER via **ReaScript**.
-
-Donc la solution simplifiée garde le bon choix technique :
+La solution simplifiée garde le bon choix technique :
 
 - **ReaScript** pour contrôler REAPER directement ;
 - **JSFX bridge** pour recevoir les CC MIDI en temps réel ;
 - **un seul fichier à lancer** pour masquer toute la partie technique.
-
-C’est plus simple pour toi qu’un VST à compiler, installer et maintenir.
 
 ---
 
@@ -67,11 +60,11 @@ Sélectionne le fichier :
 LX49plus_Mapper_OneClick.lua
 ```
 
-Important : comme tu l’as vu, `Load ReaScript...` ajoute le script dans REAPER, mais ne le lance pas toujours immédiatement.
+`Load ReaScript...` ajoute le script dans REAPER, mais ne le lance pas toujours immédiatement.
 
 ---
 
-### 3. Lance le script
+### 3. Lancer le script
 
 Dans l’Action List :
 
@@ -234,4 +227,4 @@ Nouvelle méthode :
 Load ReaScript > LX49plus_Mapper_OneClick.lua > Run
 ```
 
-C’est tout.
+Have fun !
