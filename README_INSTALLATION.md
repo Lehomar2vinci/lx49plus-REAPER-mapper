@@ -101,6 +101,21 @@ Dans la fenêtre **LX49+ Mapper** :
 4. clique sur `Changer cible` pour choisir ce que le contrôle doit piloter ;
 5. clique sur `Configurer argument` si la cible demande un numéro de piste ou un ID d’action REAPER.
 
+Tu peux aussi tout faire au clavier (plus rapide pour l’assignation) :
+
+| Touche | Action |
+| --- | --- |
+| `N` / `P` | contrôle suivant / précédent |
+| `L` | apprendre le CC du contrôle sélectionné |
+| `C` | changer la cible |
+| `A` | configurer l’argument (piste/action) |
+| `G` | configurer la plage MIDI min/max |
+| `I` | inverser la plage |
+| `R` | reset du contrôle |
+| `S` | sauvegarder |
+| `H` | afficher/masquer l’aide clavier |
+| `Esc` | quitter |
+
 Cibles disponibles :
 
 - volume de la piste sélectionnée ;
@@ -161,10 +176,10 @@ Tu peux aussi lui assigner un raccourci clavier ou l'ajouter à une toolbar REAP
 Dans l'interface `LX49+ GUI Mapper` :
 
 1. sélectionne un contrôle virtuel, par exemple `Fader 1` ou `Encoder 1` ;
-2. clique sur `Apprendre CC` ;
+2. clique sur `Apprendre CC` (ou touche `L`) ;
 3. bouge le fader, le potard ou le bouton physique correspondant sur le LX49+ ;
-4. clique sur `Changer cible` pour choisir la destination ;
-5. clique sur `Configurer argument` pour choisir le numéro de piste ou l'ID d'action REAPER.
+4. clique sur `Changer cible` (ou touche `C`) pour choisir la destination ;
+5. clique sur `Configurer argument` (ou touche `A`) pour choisir le numéro de piste ou l'ID d'action REAPER.
 
 ![Étape 6 — Apprendre et assigner les contrôles](images/etape_6_apprendre_assigner_controles.png)
 

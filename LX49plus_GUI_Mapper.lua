@@ -22,6 +22,7 @@ local message = "Ajoute le JSFX bridge sur une piste armée, puis bouge un potar
 local prev_mouse_down = false
 local last_action_gate = {}
 local controls = {}
+local show_help = true
 
 local TARGET_ORDER = {
   "NONE",
@@ -306,6 +307,16 @@ local function reset_selected(c)
   save_mappings()
 end
 
+local function select_next_control(step)
+  local n = #controls
+  selected = ((selected - 1 + step) % n) + 1
+end
+
+local function start_learning(c)
+  learn_for = c.id
+  message = "Bouge le potard/fader/bouton à associer à " .. c.name
+end
+
 local function draw_text(txt, x, y, r, g, b, a)
   gfx.set(r or 1, g or 1, b or 1, a or 1)
   gfx.x, gfx.y = x, y
@@ -383,6 +394,51 @@ local function draw_pad_button(c, x, y)
   if hit(x, y, 82, 50) then selected = c.id end
 end
 
+local function draw_help_box(x, y, w, h)
+  fill_rect(x, y, w, h, 0.10, 0.12, 0.16, 1)
+  stroke_rect(x, y, w, h, 0.42, 0.48, 0.60, 1)
+  draw_text("Assignation clavier (H pour masquer)", x + 12, y + 10, 0.92, 0.95, 1, 1)
+  draw_text("1) N/P : sélectionner un contrôle", x + 12, y + 34, 0.80, 0.86, 0.96, 1)
+  draw_text("2) L : apprendre puis bouger le contrôle physique", x + 12, y + 56, 0.80, 0.86, 0.96, 1)
+  draw_text("3) C : changer cible  |  A : configurer argument", x + 12, y + 78, 0.80, 0.86, 0.96, 1)
+  draw_text("4) G : plage MIDI  |  I : inverser  |  R : reset", x + 12, y + 100, 0.80, 0.86, 0.96, 1)
+  draw_text("5) S : sauver  |  Echap : quitter", x + 12, y + 122, 0.80, 0.86, 0.96, 1)
+end
+
+local function handle_keypress()
+  local key = gfx.getchar()
+  if key < 0 then return false end
+  if key >= 65 and key <= 90 then key = key + 32 end -- A..Z -> a..z
+  local c = controls[selected]
+
+  if key == 104 then -- h
+    show_help = not show_help
+  elseif key == 110 then -- n
+    select_next_control(1)
+  elseif key == 112 then -- p
+    select_next_control(-1)
+  elseif key == 108 then -- l
+    start_learning(c)
+  elseif key == 99 then -- c
+    cycle_target(c)
+  elseif key == 97 then -- a
+    edit_target_arg(c)
+  elseif key == 103 then -- g
+    edit_range(c)
+  elseif key == 105 then -- i
+    c.invert = not c.invert
+    save_mappings()
+  elseif key == 114 then -- r
+    reset_selected(c)
+  elseif key == 115 then -- s
+    save_mappings()
+    message = "Mappings sauvegardés dans l'ExtState REAPER."
+  elseif key == 27 then -- esc
+    return false
+  end
+  return true
+end
+
 local function draw_ui()
   W, H = gfx.w, gfx.h
   mx, my = gfx.mouse_x, gfx.mouse_y
@@ -391,6 +447,7 @@ local function draw_ui()
   prev_mouse_down = down
 
   fill_rect(0, 0, W, H, 0.08, 0.09, 0.11, 1)
+  fill_rect(0, 0, W, 66, 0.10, 0.11, 0.14, 1)
   draw_text("LX49+ Mapper pour REAPER", 24, 18, 1, 1, 1, 1)
   draw_text(last_midi, 24, 42, 0.75, 0.82, 0.95, 1)
   draw_text(message, 360, 42, 0.95, 0.85, 0.55, 1)
@@ -418,23 +475,24 @@ local function draw_ui()
   draw_text("Argument : " .. argtxt, panel_x + 16, 202, 0.82, 0.86, 0.93, 1)
   draw_text(string.format("Plage : %d..%d%s", c.min or 0, c.max or 127, c.invert and " inversée" or ""), panel_x + 16, 228, 0.82, 0.86, 0.93, 1)
 
-  if button(learn_for == c.id and "Bouge un CC..." or "Apprendre CC", panel_x + 16, 258, 110, 34) then
-    learn_for = c.id
-    message = "Bouge le potard/fader/bouton à associer à " .. c.name
-  end
-  if button("Changer cible", panel_x + 136, 258, 110, 34) then cycle_target(c) end
+  if button(learn_for == c.id and "Bouge..." or "Apprendre [L]", panel_x + 16, 258, 110, 34) then start_learning(c) end
+  if button("Cible [C]", panel_x + 136, 258, 110, 34) then cycle_target(c) end
 
   fill_rect(panel_x, 330, 260, 185, 0.11, 0.12, 0.15, 1)
   stroke_rect(panel_x, 330, 260, 185, 0.38, 0.43, 0.55, 1)
-  if button("Configurer argument", panel_x + 16, 348, 150, 34) then edit_target_arg(c) end
-  if button("Inverser", panel_x + 176, 348, 70, 34) then c.invert = not c.invert; save_mappings() end
-  if button("Plage min/max", panel_x + 16, 392, 150, 34) then edit_range(c) end
-  if button("Reset", panel_x + 176, 392, 70, 34) then reset_selected(c) end
-  if button("Sauver", panel_x + 16, 436, 110, 34) then save_mappings(); message = "Mappings sauvegardés dans l'ExtState REAPER." end
-  if button("Stop", panel_x + 136, 436, 110, 34) then gfx.quit() end
+  if button("Argument [A]", panel_x + 16, 348, 150, 34) then edit_target_arg(c) end
+  if button("Inverser [I]", panel_x + 176, 348, 70, 34) then c.invert = not c.invert; save_mappings() end
+  if button("Plage [G]", panel_x + 16, 392, 150, 34) then edit_range(c) end
+  if button("Reset [R]", panel_x + 176, 392, 70, 34) then reset_selected(c) end
+  if button("Sauver [S]", panel_x + 16, 436, 110, 34) then save_mappings(); message = "Mappings sauvegardés dans l'ExtState REAPER." end
+  if button("Stop [Esc]", panel_x + 136, 436, 110, 34) then gfx.quit() end
 
-  draw_text("Raccourci : clique un contrôle, Apprendre CC, bouge le contrôle physique.", 24, H - 42, 0.72, 0.76, 0.84, 1)
-  draw_text("Pour les actions : configure un Command ID numérique ou un ID nommé commençant par _.", 24, H - 22, 0.72, 0.76, 0.84, 1)
+  if show_help then
+    draw_help_box(24, H - 156, 640, 144)
+  else
+    draw_text("H : afficher l'aide clavier", 24, H - 30, 0.72, 0.76, 0.84, 1)
+  end
+  draw_text("Actions REAPER : utilisez un Command ID numérique ou un ID nommé commençant par _.", 24, H - 10, 0.72, 0.76, 0.84, 1)
 
   gfx.update()
 end
@@ -442,7 +500,7 @@ end
 local function main()
   poll_gmem()
   draw_ui()
-  if gfx.getchar() >= 0 then
+  if handle_keypress() then
     reaper.defer(main)
   else
     reaper.gmem_attach("")
